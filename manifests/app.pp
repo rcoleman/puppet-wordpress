@@ -87,6 +87,10 @@ class wordpress::app {
 			require =>  Package["${apache}"];
     	}
 
+  package { 'unzip':
+    ensure => present,
+    before => Exec["wordpress_extract_installer", "wordpress_extract_themes", "wordpress_extract_plugins"],
+  }
 	exec {
 		"wordpress_extract_installer":
 			command => "unzip -o /opt/wordpress/setup_files/${wordpress_archive} -d /opt/",
@@ -104,4 +108,3 @@ class wordpress::app {
 			subscribe => File["wordpress_plugins"];
 	}
 }
-	
