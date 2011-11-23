@@ -20,8 +20,8 @@ class wordpress::app {
 		default => php
 	}
 
-	package { ["${apache}","${php}","${phpmysql}"]: 
-		ensure => latest 
+	package { ["${apache}","${php}","${phpmysql}"]:
+		ensure => latest
 	}
 
 	service { $apache:
@@ -32,8 +32,8 @@ class wordpress::app {
 		require    => Package["${apache}", "${php}", "${phpmysql}"],
 		subscribe  => File["wordpress_vhost"];
 	}
-	
-	file { 
+
+	file {
 		"wordpress_application_dir":
 			name    =>  "/opt/wordpress",
 			ensure  =>  directory,
@@ -61,8 +61,8 @@ class wordpress::app {
 			name    =>    "/opt/wordpress/setup_files/themes",
 			ensure  =>    directory,
 			source	=>    "puppet:///modules/wordpress/themes/",
-			recurse =>    true,		
-			purge   =>    true,	
+			recurse =>    true,
+			purge   =>    true,
 			ignore  =>    ".svn",
 			notify =>     Exec["wordpress_extract_themes"],
 			subscribe =>  Exec["wordpress_extract_installer"];
@@ -70,12 +70,12 @@ class wordpress::app {
 			name    =>    "/opt/wordpress/setup_files/plugins",
 			ensure  =>    directory,
 			source	=>    "puppet:///modules/wordpress/plugins/",
-			recurse =>    true,		
-			purge   =>    true,	
+			recurse =>    true,
+			purge   =>    true,
 			ignore  =>    ".svn",
 			notify =>     Exec["wordpress_extract_plugins"],
 			subscribe =>  Exec["wordpress_extract_installer"];
-		# TODO: Messy - need to properly set apache2 config and enable in proper way		
+		# TODO: Messy - need to properly set apache2 config and enable in proper way
 		"wordpress_vhost":
 			name =>    $apache ? {
 				httpd =>    "/etc/httpd/conf.d/wordpress.conf",
