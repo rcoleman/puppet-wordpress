@@ -6,9 +6,16 @@
 #  The mysql::server class from the puppetlabs-mysql module.
 class wordpress::db {
 
+  if $::ec2_public_hostname {
+    $sitehost = $::ec2_public_hostname
+  }
+  else {
+    $sitehost = $::fqdn
+  }
+
   file { '/opt/wordpress/wordpress.mysql':
     ensure  => file,
-    source  => 'puppet:///modules/wordpress/wordpress.mysql',
+    content => template('wordpress/wordpress-mysqldump.erb'),
     notify  => Exec['restore-fresh-db'],
     require => Class['mysql::server'],
   }
